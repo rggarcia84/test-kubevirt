@@ -1,0 +1,19 @@
+metadata:
+  name: testvmi-containerdisk2
+apiVersion: kubevirt.io/v1alpha3
+kind: VirtualMachineInstance
+spec:
+  domain:
+    resources:
+      requests:
+        memory: 2048M
+        cpu: 2
+    devices:
+      disks:
+      - name: containerdisk
+        disk: {}
+  volumes:
+    - name: containerdisk
+      containerDisk:
+        image: www.eanregistry.com:5000/yinjjwin7base:v1
+        imagePullPolicy: Never
