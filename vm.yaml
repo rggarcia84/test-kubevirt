@@ -1,37 +1,46 @@
+---
 apiVersion: kubevirt.io/v1alpha3
 kind: VirtualMachine
 metadata:
-  name: testvm
+  labels:
+    kubevirt.io/vm: vm-alpine-datavolume
+  name: vm-alpine-datavolume
 spec:
+  dataVolumeTemplates:
+  - metadata:
+      creationTimestamp: null
+      name: alpine-dv
+    spec:
+      pvc:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 2Gi
+        storageClassName: local
+      source:
+        http:
+          url: http://cdi-http-import-server.kubevirt/images/alpine.iso
+    status: {}
   running: false
   template:
     metadata:
-      labels: 
-        kubevirt.io/size: small
-        kubevirt.io/domain: testvm
+      labels:
+        kubevirt.io/vm: vm-alpine-datavolume
     spec:
       domain:
         devices:
           disks:
           - disk:
               bus: virtio
-            name: rootfs
-          - disk:
-              bus: virtio
-            name: cloudinit
-          interfaces:
-          - name: default
-            masquerade: {}
+            name: datavolumedisk1
+        machine:
+          type: ""
         resources:
           requests:
             memory: 64M
-      networks:
-      - name: default
-        pod: {}
+      terminationGracePeriodSeconds: 0
       volumes:
-        - name: rootfs
-          containerDisk:
-            image: alpine
-        - name: cloudinit
-          cloudInitNoCloud:
-            userDataBase64: SGkuXG4= 
+      - dataVolume:
+          name: alpine-dv
+        name: datavolumedisk1
