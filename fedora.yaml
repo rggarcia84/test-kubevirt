@@ -71,18 +71,18 @@ objects:
 - apiVersion: kubevirt.io/v1alpha3
   kind: VirtualMachine
   metadata:
-    name: ${NAME}
+    name: fedora
     labels:
       vm.kubevirt.io/template: win2k12r2-{{ item.workload }}-{{ item.flavor }}
       vm.kubevirt.io/template.version: "{{ lookup('env', 'VERSION') | default('devel', true) }}"
       vm.kubevirt.io/template.revision: "{{ lookup('env', 'REVISION') | default(1, true) }}"
-      app: ${NAME}
+      app: fedora
   spec:
     running: false
     template:
       metadata:
         labels:
-          kubevirt.io/domain: ${NAME}
+          kubevirt.io/domain: fedora
           kubevirt.io/size: {{ item.flavor }}
       spec:
         domain:
@@ -130,7 +130,7 @@ objects:
         volumes:
         - name: rootdisk
           persistentVolumeClaim:
-            claimName: ${PVCNAME}
+            claimName: PVCNAME
         networks:
         - name: default
           pod: {}
